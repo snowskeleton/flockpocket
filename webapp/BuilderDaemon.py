@@ -7,6 +7,7 @@ from watchdog.events import FileSystemEventHandler
 from common import \
     config as cfg, \
     logger as log
+from security import safe_command
 
 class BuilderDaemon():
     def __init__(self):
@@ -44,7 +45,7 @@ class CodeWatcher(FileSystemEventHandler):
         self.builder_command = "bash %s/build.sh -q" % self.builder_path
 
     def build (self):
-        output = run(self.builder_command.split(), cwd=self.builder_path, capture_output=True)
+        output = safe_command.run(run, self.builder_command.split(), cwd=self.builder_path, capture_output=True)
 
     def on_modified (self, e):
         if not e.is_directory:

@@ -3,6 +3,7 @@ import subprocess
 
 from common import logger as log
 from common import config as cfg
+from security import safe_command
 
 class DaphneDaemon():
     def __init__(self):
@@ -33,8 +34,7 @@ class DaphneDaemon():
             os.environ["PYTHONPATH"] = cfg.proj_dir
             command = "daphne %s" % self.app_args
             log.debug(command)
-            result = subprocess.run(
-                command.split(),
+            result = safe_command.run(subprocess.run, command.split(),
                 capture_output = True,
                 text = True,
             )

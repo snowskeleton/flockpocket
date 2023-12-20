@@ -6,6 +6,8 @@ import time
 import os, sys
 # initialize django
 import django
+from security import safe_command
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "flockpocket.settings")
 # levy hack for strange import problem?
 os.environ["PYTHON_EGG_CACHE"] = "/tmp/.python-eggs/"
@@ -245,17 +247,17 @@ def update ():
 
     # set the permissions
     command = '%s/install/misc_install.sh' % cfg.proj_dir
-    subprocess.call(command.split())
+    safe_command.run(subprocess.call, command.split())
 
     # install
     if args.install:
         command = '%s/install/install.py' % cfg.proj_dir
-        subprocess.call(command.split())
+        safe_command.run(subprocess.call, command.split())
 
     # restart
     if args.restart:
         command = '%s restart' % cfg.tool_name
-        subprocess.call(command.split())
+        safe_command.run(subprocess.call, command.split())
 
 install_d = {}
 
@@ -273,7 +275,7 @@ def install ():
     else:
         command = '%s/install/install.py' % cfg.proj_dir
 
-    subprocess.call(command.split())
+    safe_command.run(subprocess.call, command.split())
 
 def status ():
     # check if services are running
@@ -321,7 +323,7 @@ def service_handler (action = None, services = cfg.services):
 
             print("    %s" % (service))
             command = '%s %s %s' % (cfg.tool_name, action, service)
-            Popen(command.split(), stdout=PIPE, stderr=PIPE)
+            safe_command.run(Popen, command.split(), stdout=PIPE, stderr=PIPE)
 
 def postgresql_handler (action = None):
     if not action:
@@ -340,7 +342,7 @@ def postgresql_handler (action = None):
         svc_name = "postgresql-%s" % result
 
     command = 'service %s %s' % (svc_name, action)
-    subprocess.call(command.split())
+    safe_command.run(subprocess.call, command.split())
 
 def daemon_is_running (daemon_name):
     (code, result) = getstatusoutput('ps -p `cat %s`' % cfg.get_pidfile(daemon_name))
@@ -420,7 +422,7 @@ def show_log (daemon_name = None):
         (code, result) = getstatusoutput(command)
         rows, cols = result.split()
         command = 'tail -f -n%s %s' % (int(rows) - 4, filepath)
-        subprocess.call(command, shell=True)
+        safe_command.run(subprocess.call, command, shell=True)
     else:
         with open (filepath, "r") as f:
             print(f.read())

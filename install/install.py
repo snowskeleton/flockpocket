@@ -3,6 +3,8 @@ import os
 import sys
 import argparse
 from subprocess import run
+from security import safe_command
+
 sys.path.append("/opt/flockpocket/")
 
 # parse the script arguments
@@ -18,13 +20,13 @@ print("installing (miscellaneous)...")
 command = "%s/misc_install.sh" % curr_dir
 if args.full:
     command += ' -f'
-code = run(command.split()).returncode
+code = safe_command.run(run, command.split()).returncode
 
 # Package Install
 print("installing packages...")
 command = "%s/packages.py" % curr_dir
 if args.full:
     command += ' -f'
-code = run(command.split()).returncode
+code = safe_command.run(run, command.split()).returncode
 if (code):
     sys.exit(code)
