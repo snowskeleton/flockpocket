@@ -31,7 +31,7 @@ class User:
 
     def check_active (self):
         """ check if this user is active on any of it's sockets """
-        return any([x.active for x in self.socket_l])
+        return any(x.active for x in self.socket_l)
 
     def add_household_link (self, other_user, relationship):
         pass
