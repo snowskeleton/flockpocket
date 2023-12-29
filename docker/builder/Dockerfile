@@ -1,10 +1,15 @@
 # pull the base image
-FROM python:3.9-slim-buster
+FROM python:3.9-slim-buster as baseImage
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+COPY install/requirements/pip_requirements.txt requirements.txt
+RUN apt-get update && apt-get install git procps python3-psycopg2 -y
+RUN pip3 install -r requirements.txt
+
+FROM baseImage
 RUN mkdir -p /opt/flockpocket
 WORKDIR /opt/flockpocket
 COPY . /opt/flockpocket
