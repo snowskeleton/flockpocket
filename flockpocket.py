@@ -420,7 +420,7 @@ def show_log (daemon_name = None):
         (code, result) = getstatusoutput(command)
         rows, cols = result.split()
         command = 'tail -f -n%s %s' % (int(rows) - 4, filepath)
-        subprocess.call(command, shell=True)
+        subprocess.call(command, shell=False)
     else:
         with open (filepath, "r") as f:
             print(f.read())
