@@ -124,3 +124,7 @@ class FlockConsumer(AsyncWebsocketConsumer):
                     task_l.append(user.push_active(str(self.user.id), active = self.user.active))
 
             await aio.gather(task_l)
+
+    async def register_for_push_notifications_ios(self, token):
+        """ register a user's iPhone to receive push notifications"""
+        self.user.ios_push_notification_token = token
